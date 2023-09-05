@@ -1,8 +1,4 @@
-import { Worker, parentPort } from "node:worker_threads";
-
-interface ThreadOptions {
-    async?: boolean; 
-}
+import { Worker } from "node:worker_threads";
 
 interface ThreadFeatures {
     sleep: (time: number) => void;
@@ -11,7 +7,7 @@ interface ThreadFeatures {
 type ThreadAction<T> = (
     sharedObject: Record<string, any>, 
     imports: Record<string, Function>,
-    threadFeatures: ThreadFeatures) => T | Promise<T>;
+    threadFeatures: ThreadFeatures) => T;
 
 class Thread<T> {
     private worker?: Worker;
@@ -20,12 +16,10 @@ class Thread<T> {
     private factory: () => Promise<T>;
 
     constructor(
-        target: ThreadAction<T>, 
-        options?: ThreadOptions | null, 
+        target: ThreadAction<T>,  
         sharedObject?: Record<string, any> | null,
         imports?: Record<string, string[]> | null
     ) {
-        let assembledValue = "";
         let importsCode = "";
         const defaultFeatures = `
             const __feats = {
@@ -35,7 +29,7 @@ class Thread<T> {
                 }
             }
         `;
-
+        
         const importsArray: [string, string][] = [];
 
         Object.entries(imports ?? {}).forEach(item => {
@@ -48,24 +42,14 @@ class Thread<T> {
                 .join("");
         }
 
-        if (options?.async) {
-            assembledValue = `
-                const { parentPort } = require("node:worker_threads");
-                const __shared = ${JSON.stringify(sharedObject ?? {})};
-                const __imports = {};
-                ${importsCode}
-                (${target.toString()})(__shared, __imports, __feats).then(parentPort.postMessage);
-                `;        
-        }
-        else {
-            assembledValue = `
-                const { parentPort } = require("node:worker_threads");
-                const __shared = ${JSON.stringify(sharedObject ?? {})};
-                const __imports = {};
-                ${importsCode}
-                parentPort.postMessage((${target.toString()})(__shared, __imports, __feats));
-                `;
-        }
+        let assembledValue = `
+            const { parentPort } = require("node:worker_threads");
+            const __shared = ${JSON.stringify(sharedObject ?? {})};
+            const __imports = {};
+            ${importsCode}
+            parentPort.postMessage((${target.toString()})(__shared, __imports, __feats));
+        `;
+
         this.factory = () => {
             this.promise = new Promise<T>((resolve, reject) => {
                 this.worker = new Worker(defaultFeatures + assembledValue, { eval: true });
@@ -94,4 +78,4 @@ class Thread<T> {
     }
 }
 
-export { Thread, ThreadAction, ThreadOptions }
+export { Thread, ThreadAction }
