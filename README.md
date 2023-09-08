@@ -32,12 +32,14 @@ const threadOne = new Thread(threadOneAction);
 const threadTwo = new Thread(threadTwoAction);
 const threadThree = new Thread(threadThreeAction);
 
-threadOne.start().then(console.log);
-threadTwo.start().then(console.log);
-threadThree.start().then(console.log);
+console.log(await threadOne);
+console.log(await threadTwo);
+console.log(await threadThree);
 
 // Output:
 // Hi from thread three.
 // Hi from thread two.
 // Hi from thread one.
 ```
+
+In the future we will provide a detailed documentation about the library capabilities.
