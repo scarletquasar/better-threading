@@ -1,12 +1,22 @@
 {
     "name": "better-threading",
-    "version": "0.0.1",
+    "description": "Small tool to enforce enhanced multi-threading in Node.js",
+    "version": "0.0.4",
+    "main": "./packageSrc/index.js",
+    "types": "./packageSrc/index.d.ts",
+    "import": "./packageSrc/index.js",
+    "require": "./packageSrc/index.js",
+    "type": "module",
     "dependencies": {
         "@types/node": "^20.5.9",
+        "babel": "^6.23.0",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     },
     "scripts": {
-        "build": "tsc --outDir packageSrc --declaration"
+        "build": "node build-helper.js 1 && tsc --outDir packageSrc --declaration"
+    },
+    "exports": {
+        "better-threading": "./packageSrc/index.js"
     }
 }
