@@ -4,7 +4,8 @@
       "target": "es2015",
       "module": "es2015",
       "declaration": true,
-      "outDir": "./dist",
+      "emitDeclarationOnly": true,
+      "": "./packageSrc",
       "noEmit": false,
       "strict": true,
       "noImplicitAny": true,
@@ -21,7 +22,7 @@
       "noUncheckedIndexedAccess": true,
       "noImplicitOverride": true,
       "noPropertyAccessFromIndexSignature": true,
-      "esModuleInterop": true,
+      "esModuleInterop": false,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true
     }

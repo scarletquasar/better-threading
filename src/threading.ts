@@ -46,46 +46,46 @@ class Thread<TResult, TShared> implements PromiseLike<TResult> {
             // created thread. The objective is avoiding conflicts
             // and storing all the needed objects to provide imports
             // and object sharing features.
-            globalThis["better-threading"] = {};
-            globalThis["better-threading"].imports = {};
-            globalThis["better-threading"].imports.performance = require('perf_hooks').performance;
-            globalThis["better-threading"].features = features;
+            (<any>globalThis)["better-threading"] = {};
+            (<any>globalThis)["better-threading"].imports = {};
+            (<any>globalThis)["better-threading"].imports.performance = require('perf_hooks').performance;
+            (<any>globalThis)["better-threading"].features = features;
 
             const threadStartPerformanceTime = performance.now();
             const threadRelativeStart = new Date();
 
-            globalThis["better-threading"].imports.parentPort = require("node:worker_threads").parentPort;
-            globalThis["better-threading"].shared = shared;
+            (<any>globalThis)["better-threading"].imports.parentPort = require("node:worker_threads").parentPort;
+            (<any>globalThis)["better-threading"].shared = shared;
 
             // Setup object imports; No support to default imports yet.
             Object
                 .entries(imports)
                 .forEach(importEntry => {
-                    globalThis["better-threading"].imports[importEntry[0]] = {}
+                    (<any>globalThis)["better-threading"].imports[importEntry[0]] = {}
 
                     importEntry[1].forEach(value => {
-                        globalThis["better-threading"].imports[importEntry[0]][value] = require(importEntry[0])[value];
+                        (<any>globalThis)["better-threading"].imports[importEntry[0]][value] = require(importEntry[0])[value];
                     });
                 });
 
             let result = undefined;
-            let error: Error = undefined;
+            let error: Error | undefined = undefined;
 
             try {
                 result = target(
-                    globalThis["better-threading"].shared,
-                    globalThis["better-threading"].imports,
-                    globalThis["better-threading"].features
+                    (<any>globalThis)["better-threading"].shared,
+                    (<any>globalThis)["better-threading"].imports,
+                    (<any>globalThis)["better-threading"].features
                 );
             }
             catch (e) {
-                error = e;
+                error = <Error>e;
             }
 
             const threadEndPerformanceTime = performance.now();
             const threadRelativeEnd = new Date();
 
-            globalThis["better-threading"].imports.parentPort.postMessage({
+            (<any>globalThis)["better-threading"].imports.parentPort.postMessage({
                 runtime: threadEndPerformanceTime - threadStartPerformanceTime,
                 relativeStart: threadRelativeStart,
                 relativeEnd: threadRelativeEnd,

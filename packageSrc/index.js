@@ -1,5 +1,18 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Thread = void 0;
-var threading_1 = require("./threading");
-Object.defineProperty(exports, "Thread", { enumerable: true, get: function () { return threading_1.Thread; } });
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "Thread", {
+  enumerable: true,
+  get: function get() {
+    return _threading.Thread;
+  }
+});
+Object.defineProperty(exports, "ThreadAction", {
+  enumerable: true,
+  get: function get() {
+    return _threading.ThreadAction;
+  }
+});
+var _threading = require("./threading");
