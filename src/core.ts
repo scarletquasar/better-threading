@@ -23,6 +23,7 @@ interface Thread {
     dispose: () => Promise<void>;
 }
 
+// A thread pool will
 interface ThreadPool {
     //Initialize the thread pool with N dormant threads and one single separated
     //thread that will act as queue checker for incoming calls.
